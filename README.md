@@ -1,17 +1,17 @@
-# URsim 5.10 Installation Guide for Ubuntu 18.04
+# URsim 5.11 Installation Guide for Ubuntu 20.04
 
-Currently this document describes how to install **URSim 5.10** in **Ubuntu 18.04.** 
+Currently this document describes how to install **URSim 5.11** in **Ubuntu 20.04.** 
 
 If you have futher additions, feel free to create a pull request.
 
-## Install Ubuntu 18.04
+## Install Ubuntu 20.04
 
-Download and install Ubuntu 18.04 from to [Ubuntu 18.04 releases page](https://releases.ubuntu.com/18.04/).
+Download and install Ubuntu 20.04 from to [Ubuntu 20.04 releases page](https://releases.ubuntu.com/20.04/).
 
 
-## Download and unpack URSim 5.10
+## Download and unpack URSim 5.11
 
-Download the URSim 5.10 packacge from the [Universal Robots Download Page](https://www.universal-robots.com/download/software-e-series/simulator-linux/offline-simulator-e-series-ur-sim-for-linux-5100/). You need a user account for this download.
+Download the URSim 5.11 packacge from the [Universal Robots Download Page](https://www.universal-robots.com/download/software-e-series/simulator-linux/offline-simulator-e-series-ur-sim-for-linux-5110/). You need a user account for this download.
 
 Extract the downloaded archive as per the instructions.
 
@@ -21,9 +21,9 @@ The scipt needs Java 6-8 installed, but automatically installs Java 11. If Java 
 
 ## Run URSim Install Script
 
-Using your bash prompt run the `install.sh` script using the following command.
+Before running `install.sh`, open it and change `libcurl4` to `libcurl3`.
 
-**Note: If you have ROS installed, running the following script will wipe your install.**
+Using your bash prompt run the `install.sh` script using the following command.
 
 ```bash
 sudo ./install.sh
@@ -32,106 +32,41 @@ sudo ./install.sh
 ## Add binaries to PATH
 
 ```bash
-echo -e "\nPATH="$PATH:$HOME/ursim-5.10.0.106288/usr/bin" >> ~/.profile
+echo -e "\nPATH="$PATH:$HOME/ursim-5.11.1.108318/usr/bin" >> ~/.profile
 source ~/.profile
 ```
 
+## Faking net-statistics Script ##
 
-## Provide net-statistics Perl Script
-
-For proper network support ursim requires the perl script `/sbin/net-statistics`.
-This seems to be a custom script generated for the URSim, but not provided in the installation. The script is located in the src directory of this repository.
-Download the file, move it to the correct location and add executable permisions:
+To make network working for the simulator, you can create a python script to output the network information of your computer. The easiest way is creating a Python file named `net-statistics` in `/sbin`:
 
 ```bash
-wget https://raw.githubusercontent.com/ljden/URSim_Install_Guides/main/src/net-statistics
-sudo mv net-statistics /sbin/
-sudo chmod +x /sbin/net-statistics
+sudo vi /sbin/net-statistics
 ```
+with the following content:
 
-Now you can test the script
+```Python3
+#!/usr/bin/python3
 
-```bash
-net-statistics
-```
-
-It should print out something like this:
-
-```bash
-Mode:static
+netinfo = """Mode:static
 Net up
 Address:192.168.190.134
 Mask:255.255.255.0
 Gateway:
 nameserver1:
 nameserver2:
-Hostname:ubuntu
+Hostname:ubuntu"""
+
+print(netinfo)
+
 ```
 
-If you do not see this, then you need to edit the file `/sbin/net-statistics` to adjust the name of the network interface. Use `ifconfig` to find out the name. This is how I changed the file on my system:
+then change its mode:
 
 ```bash
-sudo vim /sbin/net-statistics
+chmod 755 /sbin/net-statistics
 ```
 
-Before:
-
-```perl
-#!/usr/bin/perl
-
-my $interface = "eth1";
-my $isDhcp = 0;
-my $isStatic = 0;
-```
-
-After:
-
-```perl
-#!/usr/bin/perl
-
-my $interface = "enp0s3";
-my $isDhcp = 0;
-my $isStatic = 0;
-```
-
-## Edit /etc/network/interfaces
-
-Check the mode value printed when executing the per script `/sbin/net-statistics`.
-
-```bash
-Mode:static
-Net up
-...
-```
-
-The mode value should be `static` or `dhcp`. If the value is `disabled` then you
-need to edit your `/etc/network/interfaces` file, because the perl script
-parses the values from this file.
-
-```bash
-sudo vim /etc/network/interfaces
-```
-
-Because I use a static IP, I added the following lines:
-
-```bash
-# The primary network interface
-auto enp0s3
-iface enp0s3 inet static
-address 10.0.2.15
-netmask 255.255.255.0
-```
-
-After this change the perl script `/etc/network/interfaces` sucessfully printed
-out the right mode `static`.
-
-If you prefer DHCP you can configure the interface like this:
-
-```bash
-# The primary network interface
-auto enp0s3
-iface enp0s3 inet dhcp
-```
 
 ## Start URSim
 
