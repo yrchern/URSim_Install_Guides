@@ -43,7 +43,7 @@ To make network working for the simulator, you can create a python script to out
 ```bash
 sudo vi /sbin/net-statistics
 ```
-with the following content:
+with the following content (replace values with yours from the output of `ifconfig`):
 
 ```Python3
 #!/usr/bin/python3
