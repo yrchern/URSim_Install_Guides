@@ -71,5 +71,5 @@ check the log output on the console to get information what is going wrong.
 
 ## Install URCap Files
 
-To install URCap files, you need to start the simulator first. Then you can find a folder called `programs` under `ursim-5.11.1.108318` folder. Simply copy `.urcap` file into it and you will be able to install URCap file from the GUI.
+To install URCap files, you need to start the simulator first. Then you can find a folder called `programs` under **URsim** folder. Simply copy `.urcap` file into it and you will be able to install URCap file from the GUI.
 
