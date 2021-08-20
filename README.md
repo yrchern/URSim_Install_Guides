@@ -1,27 +1,21 @@
 # URsim 5.11 Installation Guide for Ubuntu 20.04
 
-Currently this document describes how to install **URSim 5.11** in **Ubuntu 20.04.** 
+Currently this document describes how to install **URSim 5.11** in **Ubuntu 20.04**. Assume you have installed both Ubuntu 20.04 ([Ubuntu 20.04 releases page](https://releases.ubuntu.com/20.04/)) and URSim 5.11 packacge ([Universal Robots Download Page](https://www.universal-robots.com/download/software-e-series/simulator-linux/offline-simulator-e-series-ur-sim-for-linux-5110/)).
 
 If you have futher additions, feel free to create a pull request.
 
-## Install Ubuntu 20.04
-
-Download and install Ubuntu 20.04 from to [Ubuntu 20.04 releases page](https://releases.ubuntu.com/20.04/).
-
-
-## Download and unpack URSim 5.11
-
-Download the URSim 5.11 packacge from the [Universal Robots Download Page](https://www.universal-robots.com/download/software-e-series/simulator-linux/offline-simulator-e-series-ur-sim-for-linux-5110/). You need a user account for this download.
-
-Extract the downloaded archive as per the instructions.
-
 # Dependency requirements
 
-The scipt needs Java 6-8 installed, but automatically installs Java 11. If Java 8 is installed prior to running the install script it won't install Java 11. Do so by running: `sudo apt install openjdk-8-jdk openjdk-8-jre`
+The install script requires **openjdk-8**, you need to remove openjdk that comes with Ubuntu 20.04 before installing **openjdk-8**.
+
+```bash
+sudo apt remove openjdk-*
+sudo apt install openjdk-8-jdk openjdk-8-jre
+```
 
 ## Run URSim Install Script
 
-Before running `install.sh`, open it and change `libcurl4` to `libcurl3`.
+Before running `install.sh`, open it and change `libcurl4` to `libcurl3` in the file.
 
 Using your bash prompt run the `install.sh` script using the following command.
 
@@ -30,10 +24,9 @@ sudo ./install.sh
 ```
 
 
+## net-statistics Script
 
-## net-statistics Script ##
-
-To make network working for the simulator, the easiest way is to create a python script to output the network information of your computer. The easiest way is creating a Python file named `net-statistics` in `/sbin`:
+To make network working for the simulator in Ubuntu 20.04, the simplest way is to create a script named `net-statistics` in `/sbin`, which outputs the network information of your computer.
 
 ```bash
 sudo vi /sbin/net-statistics
@@ -56,19 +49,18 @@ print(netinfo)
 
 ```
 
-Alternatively, you can download `net-statistics` from `src` folder and copy/move it to `/sbin`. Modify the configuration at the beginning of the Python script.
-
-
-Next, change its file mode:
+Alternatively, you can download `net-statistics` from `src` folder and copy/move it to `/sbin`. Change the configuration (mainly `interface`) at the beginning of the Python script to match your computer settings and change its file mode:
 
 ```bash
 chmod 755 /sbin/net-statistics
 ```
 
+* `net-statistics` is a Python script I wrote for myself to run with **URsim** and is not extensively tested. Use at your own risk.
+
 
 ## Start URSim
 
-Now you can start URSim from the command line from `ursim-5.11.1.108318` folder:
+Now you can start URSim from the command line from **URsim** folder:
 
 ```bash
 ./start-ursim.sh UR5
