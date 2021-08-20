@@ -1,0 +1,15 @@
+#!/usr/bin/python3
+
+# replace values with output of ifconfig
+
+
+netinfo = """Mode:static
+Net up
+Address:192.168.190.134
+Mask:255.255.255.0
+Gateway:
+nameserver1:
+nameserver2:
+Hostname:ubuntu"""
+
+print(netinfo)

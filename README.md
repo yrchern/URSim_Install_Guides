@@ -29,21 +29,16 @@ Using your bash prompt run the `install.sh` script using the following command.
 sudo ./install.sh
 ```
 
-## Add binaries to PATH
 
-```bash
-echo -e "\nPATH="$PATH:$HOME/ursim-5.11.1.108318/usr/bin" >> ~/.profile
-source ~/.profile
-```
 
-## Faking net-statistics Script ##
+## net-statistics Script ##
 
-To make network working for the simulator, you can create a python script to output the network information of your computer. The easiest way is creating a Python file named `net-statistics` in `/sbin`:
+To make network working for the simulator, the easiest way is to create a python script to output the network information of your computer. The easiest way is creating a Python file named `net-statistics` in `/sbin`:
 
 ```bash
 sudo vi /sbin/net-statistics
 ```
-with the following content (replace values with yours from the output of `ifconfig`):
+with the following content (replace values with yours from the output of `ifconfig` command):
 
 ```Python3
 #!/usr/bin/python3
@@ -61,7 +56,10 @@ print(netinfo)
 
 ```
 
-then change its mode:
+Alternatively, you can download `net-statistics` from `src` folder and copy/move it to `/sbin`. Modify the configuration at the beginning of the Python script.
+
+
+Next, change its file mode:
 
 ```bash
 chmod 755 /sbin/net-statistics
@@ -70,7 +68,7 @@ chmod 755 /sbin/net-statistics
 
 ## Start URSim
 
-Now you can start URSim from the command line:
+Now you can start URSim from the command line from `ursim-5.11.1.108318` folder:
 
 ```bash
 ./start-ursim.sh UR5
@@ -79,32 +77,7 @@ Now you can start URSim from the command line:
 URSim should start without any errors now. If you see errors, then you can
 check the log output on the console to get information what is going wrong.
 
-## Configure Firewall for remote control
+## Install URCap Files
 
-By default, Ubuntu has a built-in firewall: UFW, which stands for "Uncomplicated Firewall".
-To access the UR robot ports remotely, you need to properly configure this
-firewall. Here is the list of [UR client interfaces with port numbers](https://www.universal-robots.com/articles/ur/interface-communication/overview-of-client-interfaces/).
+To install URCap files, you need to start the simulator first. Then you can find a folder called `programs` under `ursim-5.11.1.108318` folder. Simply copy `.urcap` file into it and you will be able to install URCap file from the GUI.
 
-The quick and dirty solution is, to simply allow all incoming connections:
-
-```bash
-sudo ufw default allow incoming
-sudo ufw default allow outgoing
-```
-
-If you would like to have better security, you need deny all incoming connections
-and then properly allow all [ports]((https://www.universal-robots.com/articles/ur/interface-communication/overview-of-client-interfaces/)) required by UR robot:
-
-```bash
-sudo ufw default deny incoming
-sudo ufw allow ssh
-sudo ufw allow 29999
-...
-```
-
-If you prefer a UI for firewall configuration, you can install a graphical
-frontend:
-
-```bash
-sudo apt install gufw
-```

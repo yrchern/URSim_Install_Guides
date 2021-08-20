@@ -1,15 +1,47 @@
 #!/usr/bin/python3
 
-# replace values with output of ifconfig
+import re
+import subprocess
 
+# Configuration
 
-netinfo = """Mode:static
-Net up
-Address:192.168.190.134
-Mask:255.255.255.0
-Gateway:
+mode = "static"
+interface = "enp89s0" # network interface
+hostname = "my_hostname"
+
+# get output from ifconfig
+
+try:
+    ifconfig_info = subprocess.check_output(['ifconfig']).decode("utf-8") 
+except subprocess.CalledProcessError as err:
+    print(err)
+
+# search for the interface and parse the resulting string
+
+res = ifconfig_info.find(interface)
+
+if res == -1:
+	print("Cannot find interface", interface)
+	exit(-1)
+
+if_info = ifconfig_info[res:res+160]
+
+res = if_info.find("inet")
+
+net_info = if_info[res:res+80]
+
+substrs = re.split(' |\n',net_info)
+
+ip_addr = substrs[1]
+netmask = substrs[4]
+
+# output
+
+print("Mode:"+mode)
+print("Net up")
+print("Address:"+ip_addr)
+print("Mask:"+netmask)
+print("""Gateway:
 nameserver1:
-nameserver2:
-Hostname:ubuntu"""
-
-print(netinfo)
+nameserver2:""")
+print("Hostname:"+hostname)
